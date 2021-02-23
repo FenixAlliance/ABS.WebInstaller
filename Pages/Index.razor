@@ -1,0 +1,810 @@
+﻿@page "/"
+@using FenixAlliance.ACL.Configuration.Interfaces
+@using FenixAlliance.ACL.Configuration.Types
+@using FenixAlliance.ACL.Configuration.Types.ABM
+@using FenixAlliance.ABS.Installer.Data
+
+<!-- Top content -->
+<div class="top-content">
+
+    <div class="inner-bg">
+        <EditForm role="form" Model="Model" OnValidSubmit="OnValidSubmit" class="registration-form">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-sm-offset-2 text">
+                        <h1><strong>Alliance Business Suite</strong> Web Installer</h1>
+                        <div class="description">
+                            <p>
+                                Let's configure your Alliance Business Suite Instance.<br />
+                                Need assistance? <a href="https://fenix-alliance.com"><strong>read the documentation</strong></a>, or <a href="https://fenix-alliance.com"><strong>visit the Alliance ID Support Center</strong></a>!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3 form-box">
+
+                        <!-- Database -->
+                        <fieldset>
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Step 1 / 4</h3>
+                                    <p>Database </p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <div class="form-group">
+                                    <label class="" for="form-password">Engine</label>
+                                    <InputSelect @bind-Value="Model.DBEngine" class="form-email form-control">
+                                        <option value="MySQL">MySQL</option>
+                                        <option value="MSSQL">Microsoft SQL</option>
+                                    </InputSelect>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="" for="form-first-name">Host</label>
+                                    <InputText @bind-Value="Model.DBHost" type="text" name="form-first-name" placeholder="Localhost" class="form-first-name form-control" id="form-first-name" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-last-name">Port</label>
+                                    <InputNumber @bind-Value="Model.DBPort" type="number" min="0" max="65353" name="form-last-name" placeholder="3306" class="form-last-name form-control" id="form-last-name" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-first-name">Database</label>
+                                    <InputText @bind-Value="Model.DBName" type="text" name="form-first-name" placeholder="Localhost" class="form-first-name form-control" id="form-first-name" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-last-name">Username</label>
+                                    <InputText @bind-Value="Model.DBUserName" type="text" name="form-last-name" placeholder="Username" class="form-last-name form-control" id="form-last-name" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-password">Password</label>
+                                    <InputText @bind-Value="Model.DBUserSecret" type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password" />
+                                </div>
+
+                                <button type="submit" class="btn">Validate</button>
+                                <button type="button" class="btn btn-next">Next</button>
+                            </div>
+                        </fieldset>
+
+                        <!-- Tenant -->
+                        <fieldset>
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Step 2 / 4</h3>
+                                    <p>Business Tenant:</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-key"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <div class="form-group">
+                                    <label class="" for="form-email">Business Name</label>
+                                    <InputText @bind-Value="Model.TenantName" type="text" name="form-email" placeholder="Contoso Inc." class="form-email form-control" id="form-email" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-email">Business Email</label>
+                                    <InputText @bind-Value="Model.TenantEmail" type="email" name="form-email" placeholder="email@contoso.com" class="form-email form-control" id="form-email" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-password">Country</label>
+                                    <InputSelect @bind-Value="Model.TenantCountry" required class="form-email form-control">
+                                        <option value="AFG">Afghanistan</option>
+                                        <option value="ALA">Åland Islands</option>
+                                        <option value="ALB">Albania</option>
+                                        <option value="DZA">Algeria</option>
+                                        <option value="ASM">American Samoa</option>
+                                        <option value="AND">Andorra</option>
+                                        <option value="AGO">Angola</option>
+                                        <option value="AIA">Anguilla</option>
+                                        <option value="ATA">Antarctica</option>
+                                        <option value="ATG">Antigua and Barbuda</option>
+                                        <option value="ARG">Argentina</option>
+                                        <option value="ARM">Armenia</option>
+                                        <option value="ABW">Aruba</option>
+                                        <option value="AUS">Australia</option>
+                                        <option value="AUT">Austria</option>
+                                        <option value="AZE">Azerbaijan</option>
+                                        <option value="BHS">Bahamas</option>
+                                        <option value="BHR">Bahrain</option>
+                                        <option value="BGD">Bangladesh</option>
+                                        <option value="BRB">Barbados</option>
+                                        <option value="BLR">Belarus</option>
+                                        <option value="BEL">Belgium</option>
+                                        <option value="BLZ">Belize</option>
+                                        <option value="BEN">Benin</option>
+                                        <option value="BMU">Bermuda</option>
+                                        <option value="BTN">Bhutan</option>
+                                        <option value="BOL">Bolivia, Plurinational State of</option>
+                                        <option value="BES">Bonaire, Sint Eustatius and Saba</option>
+                                        <option value="BIH">Bosnia and Herzegovina</option>
+                                        <option value="BWA">Botswana</option>
+                                        <option value="BVT">Bouvet Island</option>
+                                        <option value="BRA">Brazil</option>
+                                        <option value="IOT">British Indian Ocean Territory</option>
+                                        <option value="BRN">Brunei Darussalam</option>
+                                        <option value="BGR">Bulgaria</option>
+                                        <option value="BFA">Burkina Faso</option>
+                                        <option value="BDI">Burundi</option>
+                                        <option value="KHM">Cambodia</option>
+                                        <option value="CMR">Cameroon</option>
+                                        <option value="CAN">Canada</option>
+                                        <option value="CPV">Cape Verde</option>
+                                        <option value="CYM">Cayman Islands</option>
+                                        <option value="CAF">Central African Republic</option>
+                                        <option value="TCD">Chad</option>
+                                        <option value="CHL">Chile</option>
+                                        <option value="CHN">China</option>
+                                        <option value="CXR">Christmas Island</option>
+                                        <option value="CCK">Cocos (Keeling) Islands</option>
+                                        <option value="COL">Colombia</option>
+                                        <option value="COM">Comoros</option>
+                                        <option value="COG">Congo</option>
+                                        <option value="COD">Congo, the Democratic Republic of the</option>
+                                        <option value="COK">Cook Islands</option>
+                                        <option value="CRI">Costa Rica</option>
+                                        <option value="CIV">Côte d'Ivoire</option>
+                                        <option value="HRV">Croatia</option>
+                                        <option value="CUB">Cuba</option>
+                                        <option value="CUW">Curaçao</option>
+                                        <option value="CYP">Cyprus</option>
+                                        <option value="CZE">Czech Republic</option>
+                                        <option value="DNK">Denmark</option>
+                                        <option value="DJI">Djibouti</option>
+                                        <option value="DMA">Dominica</option>
+                                        <option value="DOM">Dominican Republic</option>
+                                        <option value="ECU">Ecuador</option>
+                                        <option value="EGY">Egypt</option>
+                                        <option value="SLV">El Salvador</option>
+                                        <option value="GNQ">Equatorial Guinea</option>
+                                        <option value="ERI">Eritrea</option>
+                                        <option value="EST">Estonia</option>
+                                        <option value="ETH">Ethiopia</option>
+                                        <option value="FLK">Falkland Islands (Malvinas)</option>
+                                        <option value="FRO">Faroe Islands</option>
+                                        <option value="FJI">Fiji</option>
+                                        <option value="FIN">Finland</option>
+                                        <option value="FRA">France</option>
+                                        <option value="GUF">French Guiana</option>
+                                        <option value="PYF">French Polynesia</option>
+                                        <option value="ATF">French Southern Territories</option>
+                                        <option value="GAB">Gabon</option>
+                                        <option value="GMB">Gambia</option>
+                                        <option value="GEO">Georgia</option>
+                                        <option value="DEU">Germany</option>
+                                        <option value="GHA">Ghana</option>
+                                        <option value="GIB">Gibraltar</option>
+                                        <option value="GRC">Greece</option>
+                                        <option value="GRL">Greenland</option>
+                                        <option value="GRD">Grenada</option>
+                                        <option value="GLP">Guadeloupe</option>
+                                        <option value="GUM">Guam</option>
+                                        <option value="GTM">Guatemala</option>
+                                        <option value="GGY">Guernsey</option>
+                                        <option value="GIN">Guinea</option>
+                                        <option value="GNB">Guinea-Bissau</option>
+                                        <option value="GUY">Guyana</option>
+                                        <option value="HTI">Haiti</option>
+                                        <option value="HMD">Heard Island and McDonald Islands</option>
+                                        <option value="VAT">Holy See (Vatican City State)</option>
+                                        <option value="HND">Honduras</option>
+                                        <option value="HKG">Hong Kong</option>
+                                        <option value="HUN">Hungary</option>
+                                        <option value="ISL">Iceland</option>
+                                        <option value="IND">India</option>
+                                        <option value="IDN">Indonesia</option>
+                                        <option value="IRN">Iran, Islamic Republic of</option>
+                                        <option value="IRQ">Iraq</option>
+                                        <option value="IRL">Ireland</option>
+                                        <option value="IMN">Isle of Man</option>
+                                        <option value="ISR">Israel</option>
+                                        <option value="ITA">Italy</option>
+                                        <option value="JAM">Jamaica</option>
+                                        <option value="JPN">Japan</option>
+                                        <option value="JEY">Jersey</option>
+                                        <option value="JOR">Jordan</option>
+                                        <option value="KAZ">Kazakhstan</option>
+                                        <option value="KEN">Kenya</option>
+                                        <option value="KIR">Kiribati</option>
+                                        <option value="PRK">Korea, Democratic People's Republic of</option>
+                                        <option value="KOR">Korea, Republic of</option>
+                                        <option value="KWT">Kuwait</option>
+                                        <option value="KGZ">Kyrgyzstan</option>
+                                        <option value="LAO">Lao People's Democratic Republic</option>
+                                        <option value="LVA">Latvia</option>
+                                        <option value="LBN">Lebanon</option>
+                                        <option value="LSO">Lesotho</option>
+                                        <option value="LBR">Liberia</option>
+                                        <option value="LBY">Libya</option>
+                                        <option value="LIE">Liechtenstein</option>
+                                        <option value="LTU">Lithuania</option>
+                                        <option value="LUX">Luxembourg</option>
+                                        <option value="MAC">Macao</option>
+                                        <option value="MKD">Macedonia, the former Yugoslav Republic of</option>
+                                        <option value="MDG">Madagascar</option>
+                                        <option value="MWI">Malawi</option>
+                                        <option value="MYS">Malaysia</option>
+                                        <option value="MDV">Maldives</option>
+                                        <option value="MLI">Mali</option>
+                                        <option value="MLT">Malta</option>
+                                        <option value="MHL">Marshall Islands</option>
+                                        <option value="MTQ">Martinique</option>
+                                        <option value="MRT">Mauritania</option>
+                                        <option value="MUS">Mauritius</option>
+                                        <option value="MYT">Mayotte</option>
+                                        <option value="MEX">Mexico</option>
+                                        <option value="FSM">Micronesia, Federated States of</option>
+                                        <option value="MDA">Moldova, Republic of</option>
+                                        <option value="MCO">Monaco</option>
+                                        <option value="MNG">Mongolia</option>
+                                        <option value="MNE">Montenegro</option>
+                                        <option value="MSR">Montserrat</option>
+                                        <option value="MAR">Morocco</option>
+                                        <option value="MOZ">Mozambique</option>
+                                        <option value="MMR">Myanmar</option>
+                                        <option value="NAM">Namibia</option>
+                                        <option value="NRU">Nauru</option>
+                                        <option value="NPL">Nepal</option>
+                                        <option value="NLD">Netherlands</option>
+                                        <option value="NCL">New Caledonia</option>
+                                        <option value="NZL">New Zealand</option>
+                                        <option value="NIC">Nicaragua</option>
+                                        <option value="NER">Niger</option>
+                                        <option value="NGA">Nigeria</option>
+                                        <option value="NIU">Niue</option>
+                                        <option value="NFK">Norfolk Island</option>
+                                        <option value="MNP">Northern Mariana Islands</option>
+                                        <option value="NOR">Norway</option>
+                                        <option value="OMN">Oman</option>
+                                        <option value="PAK">Pakistan</option>
+                                        <option value="PLW">Palau</option>
+                                        <option value="PSE">Palestinian Territory, Occupied</option>
+                                        <option value="PAN">Panama</option>
+                                        <option value="PNG">Papua New Guinea</option>
+                                        <option value="PRY">Paraguay</option>
+                                        <option value="PER">Peru</option>
+                                        <option value="PHL">Philippines</option>
+                                        <option value="PCN">Pitcairn</option>
+                                        <option value="POL">Poland</option>
+                                        <option value="PRT">Portugal</option>
+                                        <option value="PRI">Puerto Rico</option>
+                                        <option value="QAT">Qatar</option>
+                                        <option value="REU">Réunion</option>
+                                        <option value="ROU">Romania</option>
+                                        <option value="RUS">Russian Federation</option>
+                                        <option value="RWA">Rwanda</option>
+                                        <option value="BLM">Saint Barthélemy</option>
+                                        <option value="SHN">Saint Helena, Ascension and Tristan da Cunha</option>
+                                        <option value="KNA">Saint Kitts and Nevis</option>
+                                        <option value="LCA">Saint Lucia</option>
+                                        <option value="MAF">Saint Martin (French part)</option>
+                                        <option value="SPM">Saint Pierre and Miquelon</option>
+                                        <option value="VCT">Saint Vincent and the Grenadines</option>
+                                        <option value="WSM">Samoa</option>
+                                        <option value="SMR">San Marino</option>
+                                        <option value="STP">Sao Tome and Principe</option>
+                                        <option value="SAU">Saudi Arabia</option>
+                                        <option value="SEN">Senegal</option>
+                                        <option value="SRB">Serbia</option>
+                                        <option value="SYC">Seychelles</option>
+                                        <option value="SLE">Sierra Leone</option>
+                                        <option value="SGP">Singapore</option>
+                                        <option value="SXM">Sint Maarten (Dutch part)</option>
+                                        <option value="SVK">Slovakia</option>
+                                        <option value="SVN">Slovenia</option>
+                                        <option value="SLB">Solomon Islands</option>
+                                        <option value="SOM">Somalia</option>
+                                        <option value="ZAF">South Africa</option>
+                                        <option value="SGS">South Georgia and the South Sandwich Islands</option>
+                                        <option value="SSD">South Sudan</option>
+                                        <option value="ESP">Spain</option>
+                                        <option value="LKA">Sri Lanka</option>
+                                        <option value="SDN">Sudan</option>
+                                        <option value="SUR">Suriname</option>
+                                        <option value="SJM">Svalbard and Jan Mayen</option>
+                                        <option value="SWZ">Swaziland</option>
+                                        <option value="SWE">Sweden</option>
+                                        <option value="CHE">Switzerland</option>
+                                        <option value="SYR">Syrian Arab Republic</option>
+                                        <option value="TWN">Taiwan, Province of China</option>
+                                        <option value="TJK">Tajikistan</option>
+                                        <option value="TZA">Tanzania, United Republic of</option>
+                                        <option value="THA">Thailand</option>
+                                        <option value="TLS">Timor-Leste</option>
+                                        <option value="TGO">Togo</option>
+                                        <option value="TKL">Tokelau</option>
+                                        <option value="TON">Tonga</option>
+                                        <option value="TTO">Trinidad and Tobago</option>
+                                        <option value="TUN">Tunisia</option>
+                                        <option value="TUR">Turkey</option>
+                                        <option value="TKM">Turkmenistan</option>
+                                        <option value="TCA">Turks and Caicos Islands</option>
+                                        <option value="TUV">Tuvalu</option>
+                                        <option value="UGA">Uganda</option>
+                                        <option value="UKR">Ukraine</option>
+                                        <option value="ARE">United Arab Emirates</option>
+                                        <option value="GBR">United Kingdom</option>
+                                        <option value="USA">United States</option>
+                                        <option value="UMI">United States Minor Outlying Islands</option>
+                                        <option value="URY">Uruguay</option>
+                                        <option value="UZB">Uzbekistan</option>
+                                        <option value="VUT">Vanuatu</option>
+                                        <option value="VEN">Venezuela, Bolivarian Republic of</option>
+                                        <option value="VNM">Viet Nam</option>
+                                        <option value="VGB">Virgin Islands, British</option>
+                                        <option value="VIR">Virgin Islands, U.S.</option>
+                                        <option value="WLF">Wallis and Futuna</option>
+                                        <option value="ESH">Western Sahara</option>
+                                        <option value="YEM">Yemen</option>
+                                        <option value="ZMB">Zambia</option>
+                                        <option value="ZWE">Zimbabwe</option>
+                                    </InputSelect>
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-facebook">Default Currency</label>
+                                    <InputSelect @bind-Value="Model.TenantCurrency" id="currencyList" class="form-email form-control">
+                                        <option value="USD" selected="selected" label="US dollar">USD</option>
+                                        <option value="EUR" label="Euro">EUR</option>
+                                        <option value="JPY" label="Japanese yen">JPY</option>
+                                        <option value="GBP" label="Pound sterling">GBP</option>
+                                        <option value="AED" label="United Arab Emirates dirham">AED</option>
+                                        <option value="AFN" label="Afghan afghani">AFN</option>
+                                        <option value="ALL" label="Albanian lek">ALL</option>
+                                        <option value="AMD" label="Armenian dram">AMD</option>
+                                        <option value="ANG" label="Netherlands Antillean guilder">ANG</option>
+                                        <option value="AOA" label="Angolan kwanza">AOA</option>
+                                        <option value="ARS" label="Argentine peso">ARS</option>
+                                        <option value="AUD" label="Australian dollar">AUD</option>
+                                        <option value="AWG" label="Aruban florin">AWG</option>
+                                        <option value="AZN" label="Azerbaijani manat">AZN</option>
+                                        <option value="BAM" label="Bosnia and Herzegovina convertible mark">BAM</option>
+                                        <option value="BBD" label="Barbadian dollar">BBD</option>
+                                        <option value="BDT" label="Bangladeshi taka">BDT</option>
+                                        <option value="BGN" label="Bulgarian lev">BGN</option>
+                                        <option value="BHD" label="Bahraini dinar">BHD</option>
+                                        <option value="BIF" label="Burundian franc">BIF</option>
+                                        <option value="BMD" label="Bermudian dollar">BMD</option>
+                                        <option value="BND" label="Brunei dollar">BND</option>
+                                        <option value="BOB" label="Bolivian boliviano">BOB</option>
+                                        <option value="BRL" label="Brazilian real">BRL</option>
+                                        <option value="BSD" label="Bahamian dollar">BSD</option>
+                                        <option value="BTN" label="Bhutanese ngultrum">BTN</option>
+                                        <option value="BWP" label="Botswana pula">BWP</option>
+                                        <option value="BYN" label="Belarusian ruble">BYN</option>
+                                        <option value="BZD" label="Belize dollar">BZD</option>
+                                        <option value="CAD" label="Canadian dollar">CAD</option>
+                                        <option value="CDF" label="Congolese franc">CDF</option>
+                                        <option value="CHF" label="Swiss franc">CHF</option>
+                                        <option value="CLP" label="Chilean peso">CLP</option>
+                                        <option value="CNY" label="Chinese yuan">CNY</option>
+                                        <option value="COP" label="Colombian peso">COP</option>
+                                        <option value="CRC" label="Costa Rican colón">CRC</option>
+                                        <option value="CUC" label="Cuban convertible peso">CUC</option>
+                                        <option value="CUP" label="Cuban peso">CUP</option>
+                                        <option value="CVE" label="Cape Verdean escudo">CVE</option>
+                                        <option value="CZK" label="Czech koruna">CZK</option>
+                                        <option value="DJF" label="Djiboutian franc">DJF</option>
+                                        <option value="DKK" label="Danish krone">DKK</option>
+                                        <option value="DOP" label="Dominican peso">DOP</option>
+                                        <option value="DZD" label="Algerian dinar">DZD</option>
+                                        <option value="EGP" label="Egyptian pound">EGP</option>
+                                        <option value="ERN" label="Eritrean nakfa">ERN</option>
+                                        <option value="ETB" label="Ethiopian birr">ETB</option>
+                                        <option value="EUR" label="EURO">EUR</option>
+                                        <option value="FJD" label="Fijian dollar">FJD</option>
+                                        <option value="FKP" label="Falkland Islands pound">FKP</option>
+                                        <option value="GBP" label="British pound">GBP</option>
+                                        <option value="GEL" label="Georgian lari">GEL</option>
+                                        <option value="GGP" label="Guernsey pound">GGP</option>
+                                        <option value="GHS" label="Ghanaian cedi">GHS</option>
+                                        <option value="GIP" label="Gibraltar pound">GIP</option>
+                                        <option value="GMD" label="Gambian dalasi">GMD</option>
+                                        <option value="GNF" label="Guinean franc">GNF</option>
+                                        <option value="GTQ" label="Guatemalan quetzal">GTQ</option>
+                                        <option value="GYD" label="Guyanese dollar">GYD</option>
+                                        <option value="HKD" label="Hong Kong dollar">HKD</option>
+                                        <option value="HNL" label="Honduran lempira">HNL</option>
+                                        <option value="HKD" label="Hong Kong dollar">HKD</option>
+                                        <option value="HRK" label="Croatian kuna">HRK</option>
+                                        <option value="HTG" label="Haitian gourde">HTG</option>
+                                        <option value="HUF" label="Hungarian forint">HUF</option>
+                                        <option value="IDR" label="Indonesian rupiah">IDR</option>
+                                        <option value="ILS" label="Israeli new shekel">ILS</option>
+                                        <option value="IMP" label="Manx pound">IMP</option>
+                                        <option value="INR" label="Indian rupee">INR</option>
+                                        <option value="IQD" label="Iraqi dinar">IQD</option>
+                                        <option value="IRR" label="Iranian rial">IRR</option>
+                                        <option value="ISK" label="Icelandic króna">ISK</option>
+                                        <option value="JEP" label="Jersey pound">JEP</option>
+                                        <option value="JMD" label="Jamaican dollar">JMD</option>
+                                        <option value="JOD" label="Jordanian dinar">JOD</option>
+                                        <option value="JPY" label="Japanese yen">JPY</option>
+                                        <option value="KES" label="Kenyan shilling">KES</option>
+                                        <option value="KGS" label="Kyrgyzstani som">KGS</option>
+                                        <option value="KHR" label="Cambodian riel">KHR</option>
+                                        <option value="KID" label="Kiribati dollar">KID</option>
+                                        <option value="KMF" label="Comorian franc">KMF</option>
+                                        <option value="KPW" label="North Korean won">KPW</option>
+                                        <option value="KRW" label="South Korean won">KRW</option>
+                                        <option value="KWD" label="Kuwaiti dinar">KWD</option>
+                                        <option value="KYD" label="Cayman Islands dollar">KYD</option>
+                                        <option value="KZT" label="Kazakhstani tenge">KZT</option>
+                                        <option value="LAK" label="Lao kip">LAK</option>
+                                        <option value="LBP" label="Lebanese pound">LBP</option>
+                                        <option value="LKR" label="Sri Lankan rupee">LKR</option>
+                                        <option value="LRD" label="Liberian dollar">LRD</option>
+                                        <option value="LSL" label="Lesotho loti">LSL</option>
+                                        <option value="LYD" label="Libyan dinar">LYD</option>
+                                        <option value="MAD" label="Moroccan dirham">MAD</option>
+                                        <option value="MDL" label="Moldovan leu">MDL</option>
+                                        <option value="MGA" label="Malagasy ariary">MGA</option>
+                                        <option value="MKD" label="Macedonian denar">MKD</option>
+                                        <option value="MMK" label="Burmese kyat">MMK</option>
+                                        <option value="MNT" label="Mongolian tögrög">MNT</option>
+                                        <option value="MOP" label="Macanese pataca">MOP</option>
+                                        <option value="MRU" label="Mauritanian ouguiya">MRU</option>
+                                        <option value="MUR" label="Mauritian rupee">MUR</option>
+                                        <option value="MVR" label="Maldivian rufiyaa">MVR</option>
+                                        <option value="MWK" label="Malawian kwacha">MWK</option>
+                                        <option value="MXN" label="Mexican peso">MXN</option>
+                                        <option value="MYR" label="Malaysian ringgit">MYR</option>
+                                        <option value="MZN" label="Mozambican metical">MZN</option>
+                                        <option value="NAD" label="Namibian dollar">NAD</option>
+                                        <option value="NGN" label="Nigerian naira">NGN</option>
+                                        <option value="NIO" label="Nicaraguan córdoba">NIO</option>
+                                        <option value="NOK" label="Norwegian krone">NOK</option>
+                                        <option value="NPR" label="Nepalese rupee">NPR</option>
+                                        <option value="NZD" label="New Zealand dollar">NZD</option>
+                                        <option value="OMR" label="Omani rial">OMR</option>
+                                        <option value="PAB" label="Panamanian balboa">PAB</option>
+                                        <option value="PEN" label="Peruvian sol">PEN</option>
+                                        <option value="PGK" label="Papua New Guinean kina">PGK</option>
+                                        <option value="PHP" label="Philippine peso">PHP</option>
+                                        <option value="PKR" label="Pakistani rupee">PKR</option>
+                                        <option value="PLN" label="Polish złoty">PLN</option>
+                                        <option value="PRB" label="Transnistrian ruble">PRB</option>
+                                        <option value="PYG" label="Paraguayan guaraní">PYG</option>
+                                        <option value="QAR" label="Qatari riyal">QAR</option>
+                                        <option value="RON" label="Romanian leu">RON</option>
+                                        <option value="RON" label="Romanian leu">RON</option>
+                                        <option value="RSD" label="Serbian dinar">RSD</option>
+                                        <option value="RUB" label="Russian ruble">RUB</option>
+                                        <option value="RWF" label="Rwandan franc">RWF</option>
+                                        <option value="SAR" label="Saudi riyal">SAR</option>
+                                        <option value="SEK" label="Swedish krona">SEK</option>
+                                        <option value="SGD" label="Singapore dollar">SGD</option>
+                                        <option value="SHP" label="Saint Helena pound">SHP</option>
+                                        <option value="SLL" label="Sierra Leonean leone">SLL</option>
+                                        <option value="SLS" label="Somaliland shilling">SLS</option>
+                                        <option value="SOS" label="Somali shilling">SOS</option>
+                                        <option value="SRD" label="Surinamese dollar">SRD</option>
+                                        <option value="SSP" label="South Sudanese pound">SSP</option>
+                                        <option value="STN" label="São Tomé and Príncipe dobra">STN</option>
+                                        <option value="SYP" label="Syrian pound">SYP</option>
+                                        <option value="SZL" label="Swazi lilangeni">SZL</option>
+                                        <option value="THB" label="Thai baht">THB</option>
+                                        <option value="TJS" label="Tajikistani somoni">TJS</option>
+                                        <option value="TMT" label="Turkmenistan manat">TMT</option>
+                                        <option value="TND" label="Tunisian dinar">TND</option>
+                                        <option value="TOP" label="Tongan paʻanga">TOP</option>
+                                        <option value="TRY" label="Turkish lira">TRY</option>
+                                        <option value="TTD" label="Trinidad and Tobago dollar">TTD</option>
+                                        <option value="TVD" label="Tuvaluan dollar">TVD</option>
+                                        <option value="TWD" label="New Taiwan dollar">TWD</option>
+                                        <option value="TZS" label="Tanzanian shilling">TZS</option>
+                                        <option value="UAH" label="Ukrainian hryvnia">UAH</option>
+                                        <option value="UGX" label="Ugandan shilling">UGX</option>
+                                        <option value="USD" label="United States dollar">USD</option>
+                                        <option value="UYU" label="Uruguayan peso">UYU</option>
+                                        <option value="UZS" label="Uzbekistani soʻm">UZS</option>
+                                        <option value="VES" label="Venezuelan bolívar soberano">VES</option>
+                                        <option value="VND" label="Vietnamese đồng">VND</option>
+                                        <option value="VUV" label="Vanuatu vatu">VUV</option>
+                                        <option value="WST" label="Samoan tālā">WST</option>
+                                        <option value="XAF" label="Central African CFA franc">XAF</option>
+                                        <option value="XCD" label="Eastern Caribbean dollar">XCD</option>
+                                        <option value="XOF" label="West African CFA franc">XOF</option>
+                                        <option value="XPF" label="CFP franc">XPF</option>
+                                        <option value="ZAR" label="South African rand">ZAR</option>
+                                        <option value="ZMW" label="Zambian kwacha">ZMW</option>
+                                        <option value="ZWB" label="Zimbabwean bonds">ZWB</option>
+                                    </InputSelect>
+                                </div>
+                                <button type="button" class="btn btn-previous">Previous</button>
+                                <button type="submit" class="btn">Validate</button>
+                                <button type="button" class="btn btn-next">Next</button>
+                            </div>
+                        </fieldset>
+
+                        <!-- Portal -->
+                        <fieldset>
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Step 3 / 4</h3>
+                                    <p>Set up your portal:</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-key"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+
+                                <div class="form-group">
+                                    <label class="" for="form-email">Portal Title</label>
+                                    <InputText @bind-Value="Model.PortalTitle"  type="text" name="form-email" placeholder="My Awesome eCommerce" class="form-email form-control" id="form-email" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="" for="form-about-yourself">Portal Description</label>
+                                    <InputTextArea @bind-Value="Model.PortalDescription" name="form-about-yourself" placeholder="Portal Description."
+                                                   class="form-about-yourself form-control" id="form-about-yourself"></InputTextArea>
+                                </div>
+
+                                <button type="button" class="btn btn-previous">Previous</button>
+                                <button type="submit" class="btn">Validate</button>
+                                <button type="button" class="btn btn-next">Next</button>
+                            </div>
+                        </fieldset>
+
+                        <!-- Holder -->
+                        <fieldset>
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Step 4 / 4</h3>
+                                    <p>
+                                        Review Configuration
+                                    </p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-twitter"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+
+                                <div class="form-group">
+                                    <label class="" for="form-email">Admin User Name</label>
+                                    <InputText @bind-Value="Model.HolderName" type="text" name="form-email" placeholder="My Awesome eCommerce" class="form-email form-control" id="form-email" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-email">Admin Email</label>
+                                    <InputText @bind-Value="Model.HolderEmail" type="email" name="form-email" placeholder="email@contoso.com" class="form-email form-control" id="form-email" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-repeat-password">Admin User password</label>
+                                    <InputText @bind-Value="Model.HolderPassword" type="password" name="form-repeat-password" placeholder="Repeat password..."
+                                           class="form-repeat-password form-control" id="form-repeat-password" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-facebook">Default Currency</label>
+                                    <InputSelect @bind-Value="Model.HolderCurrency" id="currencyList" class="form-email form-control">
+                                        <option value="USD" selected="selected" label="US dollar">USD</option>
+                                        <option value="EUR" label="Euro">EUR</option>
+                                        <option value="JPY" label="Japanese yen">JPY</option>
+                                        <option value="GBP" label="Pound sterling">GBP</option>
+                                        <option value="AED" label="United Arab Emirates dirham">AED</option>
+                                        <option value="AFN" label="Afghan afghani">AFN</option>
+                                        <option value="ALL" label="Albanian lek">ALL</option>
+                                        <option value="AMD" label="Armenian dram">AMD</option>
+                                        <option value="ANG" label="Netherlands Antillean guilder">ANG</option>
+                                        <option value="AOA" label="Angolan kwanza">AOA</option>
+                                        <option value="ARS" label="Argentine peso">ARS</option>
+                                        <option value="AUD" label="Australian dollar">AUD</option>
+                                        <option value="AWG" label="Aruban florin">AWG</option>
+                                        <option value="AZN" label="Azerbaijani manat">AZN</option>
+                                        <option value="BAM" label="Bosnia and Herzegovina convertible mark">BAM</option>
+                                        <option value="BBD" label="Barbadian dollar">BBD</option>
+                                        <option value="BDT" label="Bangladeshi taka">BDT</option>
+                                        <option value="BGN" label="Bulgarian lev">BGN</option>
+                                        <option value="BHD" label="Bahraini dinar">BHD</option>
+                                        <option value="BIF" label="Burundian franc">BIF</option>
+                                        <option value="BMD" label="Bermudian dollar">BMD</option>
+                                        <option value="BND" label="Brunei dollar">BND</option>
+                                        <option value="BOB" label="Bolivian boliviano">BOB</option>
+                                        <option value="BRL" label="Brazilian real">BRL</option>
+                                        <option value="BSD" label="Bahamian dollar">BSD</option>
+                                        <option value="BTN" label="Bhutanese ngultrum">BTN</option>
+                                        <option value="BWP" label="Botswana pula">BWP</option>
+                                        <option value="BYN" label="Belarusian ruble">BYN</option>
+                                        <option value="BZD" label="Belize dollar">BZD</option>
+                                        <option value="CAD" label="Canadian dollar">CAD</option>
+                                        <option value="CDF" label="Congolese franc">CDF</option>
+                                        <option value="CHF" label="Swiss franc">CHF</option>
+                                        <option value="CLP" label="Chilean peso">CLP</option>
+                                        <option value="CNY" label="Chinese yuan">CNY</option>
+                                        <option value="COP" label="Colombian peso">COP</option>
+                                        <option value="CRC" label="Costa Rican colón">CRC</option>
+                                        <option value="CUC" label="Cuban convertible peso">CUC</option>
+                                        <option value="CUP" label="Cuban peso">CUP</option>
+                                        <option value="CVE" label="Cape Verdean escudo">CVE</option>
+                                        <option value="CZK" label="Czech koruna">CZK</option>
+                                        <option value="DJF" label="Djiboutian franc">DJF</option>
+                                        <option value="DKK" label="Danish krone">DKK</option>
+                                        <option value="DOP" label="Dominican peso">DOP</option>
+                                        <option value="DZD" label="Algerian dinar">DZD</option>
+                                        <option value="EGP" label="Egyptian pound">EGP</option>
+                                        <option value="ERN" label="Eritrean nakfa">ERN</option>
+                                        <option value="ETB" label="Ethiopian birr">ETB</option>
+                                        <option value="EUR" label="EURO">EUR</option>
+                                        <option value="FJD" label="Fijian dollar">FJD</option>
+                                        <option value="FKP" label="Falkland Islands pound">FKP</option>
+                                        <option value="GBP" label="British pound">GBP</option>
+                                        <option value="GEL" label="Georgian lari">GEL</option>
+                                        <option value="GGP" label="Guernsey pound">GGP</option>
+                                        <option value="GHS" label="Ghanaian cedi">GHS</option>
+                                        <option value="GIP" label="Gibraltar pound">GIP</option>
+                                        <option value="GMD" label="Gambian dalasi">GMD</option>
+                                        <option value="GNF" label="Guinean franc">GNF</option>
+                                        <option value="GTQ" label="Guatemalan quetzal">GTQ</option>
+                                        <option value="GYD" label="Guyanese dollar">GYD</option>
+                                        <option value="HKD" label="Hong Kong dollar">HKD</option>
+                                        <option value="HNL" label="Honduran lempira">HNL</option>
+                                        <option value="HKD" label="Hong Kong dollar">HKD</option>
+                                        <option value="HRK" label="Croatian kuna">HRK</option>
+                                        <option value="HTG" label="Haitian gourde">HTG</option>
+                                        <option value="HUF" label="Hungarian forint">HUF</option>
+                                        <option value="IDR" label="Indonesian rupiah">IDR</option>
+                                        <option value="ILS" label="Israeli new shekel">ILS</option>
+                                        <option value="IMP" label="Manx pound">IMP</option>
+                                        <option value="INR" label="Indian rupee">INR</option>
+                                        <option value="IQD" label="Iraqi dinar">IQD</option>
+                                        <option value="IRR" label="Iranian rial">IRR</option>
+                                        <option value="ISK" label="Icelandic króna">ISK</option>
+                                        <option value="JEP" label="Jersey pound">JEP</option>
+                                        <option value="JMD" label="Jamaican dollar">JMD</option>
+                                        <option value="JOD" label="Jordanian dinar">JOD</option>
+                                        <option value="JPY" label="Japanese yen">JPY</option>
+                                        <option value="KES" label="Kenyan shilling">KES</option>
+                                        <option value="KGS" label="Kyrgyzstani som">KGS</option>
+                                        <option value="KHR" label="Cambodian riel">KHR</option>
+                                        <option value="KID" label="Kiribati dollar">KID</option>
+                                        <option value="KMF" label="Comorian franc">KMF</option>
+                                        <option value="KPW" label="North Korean won">KPW</option>
+                                        <option value="KRW" label="South Korean won">KRW</option>
+                                        <option value="KWD" label="Kuwaiti dinar">KWD</option>
+                                        <option value="KYD" label="Cayman Islands dollar">KYD</option>
+                                        <option value="KZT" label="Kazakhstani tenge">KZT</option>
+                                        <option value="LAK" label="Lao kip">LAK</option>
+                                        <option value="LBP" label="Lebanese pound">LBP</option>
+                                        <option value="LKR" label="Sri Lankan rupee">LKR</option>
+                                        <option value="LRD" label="Liberian dollar">LRD</option>
+                                        <option value="LSL" label="Lesotho loti">LSL</option>
+                                        <option value="LYD" label="Libyan dinar">LYD</option>
+                                        <option value="MAD" label="Moroccan dirham">MAD</option>
+                                        <option value="MDL" label="Moldovan leu">MDL</option>
+                                        <option value="MGA" label="Malagasy ariary">MGA</option>
+                                        <option value="MKD" label="Macedonian denar">MKD</option>
+                                        <option value="MMK" label="Burmese kyat">MMK</option>
+                                        <option value="MNT" label="Mongolian tögrög">MNT</option>
+                                        <option value="MOP" label="Macanese pataca">MOP</option>
+                                        <option value="MRU" label="Mauritanian ouguiya">MRU</option>
+                                        <option value="MUR" label="Mauritian rupee">MUR</option>
+                                        <option value="MVR" label="Maldivian rufiyaa">MVR</option>
+                                        <option value="MWK" label="Malawian kwacha">MWK</option>
+                                        <option value="MXN" label="Mexican peso">MXN</option>
+                                        <option value="MYR" label="Malaysian ringgit">MYR</option>
+                                        <option value="MZN" label="Mozambican metical">MZN</option>
+                                        <option value="NAD" label="Namibian dollar">NAD</option>
+                                        <option value="NGN" label="Nigerian naira">NGN</option>
+                                        <option value="NIO" label="Nicaraguan córdoba">NIO</option>
+                                        <option value="NOK" label="Norwegian krone">NOK</option>
+                                        <option value="NPR" label="Nepalese rupee">NPR</option>
+                                        <option value="NZD" label="New Zealand dollar">NZD</option>
+                                        <option value="OMR" label="Omani rial">OMR</option>
+                                        <option value="PAB" label="Panamanian balboa">PAB</option>
+                                        <option value="PEN" label="Peruvian sol">PEN</option>
+                                        <option value="PGK" label="Papua New Guinean kina">PGK</option>
+                                        <option value="PHP" label="Philippine peso">PHP</option>
+                                        <option value="PKR" label="Pakistani rupee">PKR</option>
+                                        <option value="PLN" label="Polish złoty">PLN</option>
+                                        <option value="PRB" label="Transnistrian ruble">PRB</option>
+                                        <option value="PYG" label="Paraguayan guaraní">PYG</option>
+                                        <option value="QAR" label="Qatari riyal">QAR</option>
+                                        <option value="RON" label="Romanian leu">RON</option>
+                                        <option value="RON" label="Romanian leu">RON</option>
+                                        <option value="RSD" label="Serbian dinar">RSD</option>
+                                        <option value="RUB" label="Russian ruble">RUB</option>
+                                        <option value="RWF" label="Rwandan franc">RWF</option>
+                                        <option value="SAR" label="Saudi riyal">SAR</option>
+                                        <option value="SEK" label="Swedish krona">SEK</option>
+                                        <option value="SGD" label="Singapore dollar">SGD</option>
+                                        <option value="SHP" label="Saint Helena pound">SHP</option>
+                                        <option value="SLL" label="Sierra Leonean leone">SLL</option>
+                                        <option value="SLS" label="Somaliland shilling">SLS</option>
+                                        <option value="SOS" label="Somali shilling">SOS</option>
+                                        <option value="SRD" label="Surinamese dollar">SRD</option>
+                                        <option value="SSP" label="South Sudanese pound">SSP</option>
+                                        <option value="STN" label="São Tomé and Príncipe dobra">STN</option>
+                                        <option value="SYP" label="Syrian pound">SYP</option>
+                                        <option value="SZL" label="Swazi lilangeni">SZL</option>
+                                        <option value="THB" label="Thai baht">THB</option>
+                                        <option value="TJS" label="Tajikistani somoni">TJS</option>
+                                        <option value="TMT" label="Turkmenistan manat">TMT</option>
+                                        <option value="TND" label="Tunisian dinar">TND</option>
+                                        <option value="TOP" label="Tongan paʻanga">TOP</option>
+                                        <option value="TRY" label="Turkish lira">TRY</option>
+                                        <option value="TTD" label="Trinidad and Tobago dollar">TTD</option>
+                                        <option value="TVD" label="Tuvaluan dollar">TVD</option>
+                                        <option value="TWD" label="New Taiwan dollar">TWD</option>
+                                        <option value="TZS" label="Tanzanian shilling">TZS</option>
+                                        <option value="UAH" label="Ukrainian hryvnia">UAH</option>
+                                        <option value="UGX" label="Ugandan shilling">UGX</option>
+                                        <option value="USD" label="United States dollar">USD</option>
+                                        <option value="UYU" label="Uruguayan peso">UYU</option>
+                                        <option value="UZS" label="Uzbekistani soʻm">UZS</option>
+                                        <option value="VES" label="Venezuelan bolívar soberano">VES</option>
+                                        <option value="VND" label="Vietnamese đồng">VND</option>
+                                        <option value="VUV" label="Vanuatu vatu">VUV</option>
+                                        <option value="WST" label="Samoan tālā">WST</option>
+                                        <option value="XAF" label="Central African CFA franc">XAF</option>
+                                        <option value="XCD" label="Eastern Caribbean dollar">XCD</option>
+                                        <option value="XOF" label="West African CFA franc">XOF</option>
+                                        <option value="XPF" label="CFP franc">XPF</option>
+                                        <option value="ZAR" label="South African rand">ZAR</option>
+                                        <option value="ZMW" label="Zambian kwacha">ZMW</option>
+                                        <option value="ZWB" label="Zimbabwean bonds">ZWB</option>
+                                    </InputSelect>
+                                </div>
+
+                                <button type="button" class="btn btn-previous">Previous</button>
+                                <button type="submit" class="btn">Validate</button>
+                                <button type="button" class="btn btn-next">Next</button>
+                            </div>
+                        </fieldset>
+                        <!-- Review -->
+                        <fieldset>
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Step 4 / 4</h3>
+                                    <p>Admin Account:</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-twitter"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <div class="form-group">
+                                    <DataAnnotationsValidator />
+                                    <ValidationSummary />
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="form-email">DB Engine</label>
+                                    <p><b>@Model.DBEngine</b></p>
+                                </div>
+
+
+                                <button type="button" class="btn btn-previous">Previous</button>
+                                <button type="submit" class="btn">Install!</button>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+
+</div>
+
+@code {
+    private ISuiteOptions SuiteOptions { get; set; } = new SuiteOptions();
+
+    private InstallDto Model { get; set; } = new InstallDto();
+
+    protected async Task OnValidSubmit()
+    {
+        // TODO: Configure initial configuration file.
+
+        await SuiteOptions.SerializeOptionsToFile();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JS.InvokeVoidAsync("interopFunction.InitInstallForm");
+    }
+
+
+}
