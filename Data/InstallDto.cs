@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FenixAlliance.ABS.Installer.Data
 {
-    public  class InstallDto
+    public class InstallDto
     {
         [Required]
         public int DBPort { get; set; } = 3306;
