@@ -3,7 +3,64 @@
 @using FenixAlliance.ACL.Configuration.Types
 @using FenixAlliance.ACL.Configuration.Types.ABM
 @using FenixAlliance.ABS.Installer.Data
-
+@using FenixAlliance.ACL.Configuration.Enums
+@using Pomelo.EntityFrameworkCore.MySql;
+@using MySql.Data;
+@using MySql.Data.MySqlClient;
+@using FenixAlliance.ABM.Data;
+@using FenixAlliance.ABM.Data.Access.Clients;
+@using FenixAlliance.ABM.Data.Access.Context;
+@using FenixAlliance.ABM.Data.Access.Helpers;
+@using FenixAlliance.ABM.Data.Interfaces.Access;
+@using FenixAlliance.ABM.Data.Interfaces.Helpers;
+@using FenixAlliance.ABM.Data.Interfaces.Storage;
+@using FenixAlliance.ACL.Configuration.Interfaces;
+@using FenixAlliance.ACL.Configuration.Types;
+@using Microsoft.EntityFrameworkCore;
+@using Microsoft.Extensions.Configuration;
+@using Microsoft.Extensions.DependencyInjection;
+@using Microsoft.Extensions.Hosting;
+@using System;
+@using System.Data.SqlClient;
+@using System.Linq;
+@using FenixAlliance.ABM.Data.Access.Helpers;
+@using FenixAlliance.ABM.Data.Clients.OpenCurrencyExchange;
+@using FenixAlliance.ABM.Data.Clients.RestCountries;
+@using FenixAlliance.ABM.Data.Seeding.Models;
+@using FenixAlliance.ABM.Models.Content.Menus;
+@using FenixAlliance.ABM.Models.Content.WebPortals;
+@using FenixAlliance.ABM.Models.Global.Globe.Countries;
+@using FenixAlliance.ABM.Models.Global.Globe.Languages;
+@using FenixAlliance.ABM.Models.Global.Globe.RegionalBlocks;
+@using FenixAlliance.ABM.Models.Global.Globe.TimeZones;
+@using FenixAlliance.ABM.Models.Global.Integrations.Applications;
+@using FenixAlliance.ABM.Models.Global.Integrations.Applications.BusinessApplicationScopes;
+@using FenixAlliance.ABM.Models.Holders;
+@using FenixAlliance.ABM.Models.Logistics.Stock.ItemCategories;
+@using FenixAlliance.ABM.Models.Security.BusinessPermissions.BusinessPermissionGrants.BusinessPermissionGrantScopes;
+@using FenixAlliance.ABM.Models.Security.BusinessSecurityRoles.BusinessSecurityRoleGrants.BusinessSecurityRoleGrantScopes;
+@using FenixAlliance.ABM.Models.Tenants;
+@using FenixAlliance.ABM.Models.Tenants.BusinessProfileRecords;
+@using FenixAlliance.ABM.Models.Tenants.BusinessSegmentation;
+@using FenixAlliance.ABM.SDK.Helpers;
+@using FenixAlliance.ACL.Configuration.Interfaces;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.EntityFrameworkCore;
+@using Microsoft.Extensions.Configuration;
+@using Microsoft.Extensions.Hosting;
+@using Newtonsoft.Json;
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Net;
+@using System.Threading.Tasks;
+@using FenixAlliance.ABM.Data.Seeding.Helpers;
+@using City = FenixAlliance.ABM.Models.Global.Globe.Countries.City;
+@using Country = FenixAlliance.ABM.Models.Global.Globe.Countries.Country;
+@using CountryState = FenixAlliance.ABM.Models.Global.Globe.Countries.CountryState;
+@using Timezone = FenixAlliance.ABM.Models.Global.Globe.TimeZones.Timezone;
+@inject ISuiteOptions SuiteOptions
+@inject Microsoft.Extensions.Hosting.IHostApplicationLifetime AppLifetime
 <!-- Top content -->
 <div class="top-content">
 
@@ -54,7 +111,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="" for="form-first-name">Database</label>
-                                    <InputText @bind-Value="Model.DBName" type="text" name="form-first-name" placeholder="Localhost" class="form-first-name form-control" id="form-first-name" />
+                                    <InputText @bind-Value="Model.DBName" type="text" name="form-first-name" placeholder="absuite" class="form-first-name form-control" id="form-first-name" />
                                 </div>
                                 <div class="form-group">
                                     <label class="" for="form-last-name">Username</label>
@@ -535,12 +592,12 @@
 
                                 <div class="form-group">
                                     <label class="" for="form-email">Portal Title</label>
-                                    <InputText @bind-Value="Model.PortalTitle"  type="text" name="form-email" placeholder="My Awesome eCommerce" class="form-email form-control" id="form-email" />
+                                    <InputText @bind-Value="Model.PortalTitle" type="text" name="form-email" placeholder="My Awesome eCommerce" class="form-email form-control" id="form-email" />
                                 </div>
 
                                 <div class="form-group">
                                     <label class="" for="form-about-yourself">Portal Description</label>
-                                    <InputTextArea @bind-Value="Model.PortalDescription" name="form-about-yourself" placeholder="Portal Description."
+                                    <InputTextArea @bind-Value="Model.PortalDescription" name="form-about-yourself" placeholder="Give your portal an outstanding description!"
                                                    class="form-about-yourself form-control" id="form-about-yourself"></InputTextArea>
                                 </div>
 
@@ -550,210 +607,97 @@
                             </div>
                         </fieldset>
 
-                        <!-- Holder -->
+                        <!-- Identity -->
                         <fieldset>
                             <div class="form-top">
                                 <div class="form-top-left">
-                                    <h3>Step 4 / 4</h3>
-                                    <p>
-                                        Review Configuration
-                                    </p>
+                                    <h3>Step 3 / 4</h3>
+                                    <p>Set up Identity:</p>
                                 </div>
                                 <div class="form-top-right">
-                                    <i class="fa fa-twitter"></i>
+                                    <i class="fa fa-key"></i>
                                 </div>
                             </div>
                             <div class="form-bottom">
 
                                 <div class="form-group">
-                                    <label class="" for="form-email">Admin User Name</label>
-                                    <InputText @bind-Value="Model.HolderName" type="text" name="form-email" placeholder="My Awesome eCommerce" class="form-email form-control" id="form-email" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="" for="form-email">Admin Email</label>
-                                    <InputText @bind-Value="Model.HolderEmail" type="email" name="form-email" placeholder="email@contoso.com" class="form-email form-control" id="form-email" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="" for="form-repeat-password">Admin User password</label>
-                                    <InputText @bind-Value="Model.HolderPassword" type="password" name="form-repeat-password" placeholder="Repeat password..."
-                                           class="form-repeat-password form-control" id="form-repeat-password" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="" for="form-facebook">Default Currency</label>
-                                    <InputSelect @bind-Value="Model.HolderCurrency" id="currencyList" class="form-email form-control">
-                                        <option value="USD" selected="selected" label="US dollar">USD</option>
-                                        <option value="EUR" label="Euro">EUR</option>
-                                        <option value="JPY" label="Japanese yen">JPY</option>
-                                        <option value="GBP" label="Pound sterling">GBP</option>
-                                        <option value="AED" label="United Arab Emirates dirham">AED</option>
-                                        <option value="AFN" label="Afghan afghani">AFN</option>
-                                        <option value="ALL" label="Albanian lek">ALL</option>
-                                        <option value="AMD" label="Armenian dram">AMD</option>
-                                        <option value="ANG" label="Netherlands Antillean guilder">ANG</option>
-                                        <option value="AOA" label="Angolan kwanza">AOA</option>
-                                        <option value="ARS" label="Argentine peso">ARS</option>
-                                        <option value="AUD" label="Australian dollar">AUD</option>
-                                        <option value="AWG" label="Aruban florin">AWG</option>
-                                        <option value="AZN" label="Azerbaijani manat">AZN</option>
-                                        <option value="BAM" label="Bosnia and Herzegovina convertible mark">BAM</option>
-                                        <option value="BBD" label="Barbadian dollar">BBD</option>
-                                        <option value="BDT" label="Bangladeshi taka">BDT</option>
-                                        <option value="BGN" label="Bulgarian lev">BGN</option>
-                                        <option value="BHD" label="Bahraini dinar">BHD</option>
-                                        <option value="BIF" label="Burundian franc">BIF</option>
-                                        <option value="BMD" label="Bermudian dollar">BMD</option>
-                                        <option value="BND" label="Brunei dollar">BND</option>
-                                        <option value="BOB" label="Bolivian boliviano">BOB</option>
-                                        <option value="BRL" label="Brazilian real">BRL</option>
-                                        <option value="BSD" label="Bahamian dollar">BSD</option>
-                                        <option value="BTN" label="Bhutanese ngultrum">BTN</option>
-                                        <option value="BWP" label="Botswana pula">BWP</option>
-                                        <option value="BYN" label="Belarusian ruble">BYN</option>
-                                        <option value="BZD" label="Belize dollar">BZD</option>
-                                        <option value="CAD" label="Canadian dollar">CAD</option>
-                                        <option value="CDF" label="Congolese franc">CDF</option>
-                                        <option value="CHF" label="Swiss franc">CHF</option>
-                                        <option value="CLP" label="Chilean peso">CLP</option>
-                                        <option value="CNY" label="Chinese yuan">CNY</option>
-                                        <option value="COP" label="Colombian peso">COP</option>
-                                        <option value="CRC" label="Costa Rican colón">CRC</option>
-                                        <option value="CUC" label="Cuban convertible peso">CUC</option>
-                                        <option value="CUP" label="Cuban peso">CUP</option>
-                                        <option value="CVE" label="Cape Verdean escudo">CVE</option>
-                                        <option value="CZK" label="Czech koruna">CZK</option>
-                                        <option value="DJF" label="Djiboutian franc">DJF</option>
-                                        <option value="DKK" label="Danish krone">DKK</option>
-                                        <option value="DOP" label="Dominican peso">DOP</option>
-                                        <option value="DZD" label="Algerian dinar">DZD</option>
-                                        <option value="EGP" label="Egyptian pound">EGP</option>
-                                        <option value="ERN" label="Eritrean nakfa">ERN</option>
-                                        <option value="ETB" label="Ethiopian birr">ETB</option>
-                                        <option value="EUR" label="EURO">EUR</option>
-                                        <option value="FJD" label="Fijian dollar">FJD</option>
-                                        <option value="FKP" label="Falkland Islands pound">FKP</option>
-                                        <option value="GBP" label="British pound">GBP</option>
-                                        <option value="GEL" label="Georgian lari">GEL</option>
-                                        <option value="GGP" label="Guernsey pound">GGP</option>
-                                        <option value="GHS" label="Ghanaian cedi">GHS</option>
-                                        <option value="GIP" label="Gibraltar pound">GIP</option>
-                                        <option value="GMD" label="Gambian dalasi">GMD</option>
-                                        <option value="GNF" label="Guinean franc">GNF</option>
-                                        <option value="GTQ" label="Guatemalan quetzal">GTQ</option>
-                                        <option value="GYD" label="Guyanese dollar">GYD</option>
-                                        <option value="HKD" label="Hong Kong dollar">HKD</option>
-                                        <option value="HNL" label="Honduran lempira">HNL</option>
-                                        <option value="HKD" label="Hong Kong dollar">HKD</option>
-                                        <option value="HRK" label="Croatian kuna">HRK</option>
-                                        <option value="HTG" label="Haitian gourde">HTG</option>
-                                        <option value="HUF" label="Hungarian forint">HUF</option>
-                                        <option value="IDR" label="Indonesian rupiah">IDR</option>
-                                        <option value="ILS" label="Israeli new shekel">ILS</option>
-                                        <option value="IMP" label="Manx pound">IMP</option>
-                                        <option value="INR" label="Indian rupee">INR</option>
-                                        <option value="IQD" label="Iraqi dinar">IQD</option>
-                                        <option value="IRR" label="Iranian rial">IRR</option>
-                                        <option value="ISK" label="Icelandic króna">ISK</option>
-                                        <option value="JEP" label="Jersey pound">JEP</option>
-                                        <option value="JMD" label="Jamaican dollar">JMD</option>
-                                        <option value="JOD" label="Jordanian dinar">JOD</option>
-                                        <option value="JPY" label="Japanese yen">JPY</option>
-                                        <option value="KES" label="Kenyan shilling">KES</option>
-                                        <option value="KGS" label="Kyrgyzstani som">KGS</option>
-                                        <option value="KHR" label="Cambodian riel">KHR</option>
-                                        <option value="KID" label="Kiribati dollar">KID</option>
-                                        <option value="KMF" label="Comorian franc">KMF</option>
-                                        <option value="KPW" label="North Korean won">KPW</option>
-                                        <option value="KRW" label="South Korean won">KRW</option>
-                                        <option value="KWD" label="Kuwaiti dinar">KWD</option>
-                                        <option value="KYD" label="Cayman Islands dollar">KYD</option>
-                                        <option value="KZT" label="Kazakhstani tenge">KZT</option>
-                                        <option value="LAK" label="Lao kip">LAK</option>
-                                        <option value="LBP" label="Lebanese pound">LBP</option>
-                                        <option value="LKR" label="Sri Lankan rupee">LKR</option>
-                                        <option value="LRD" label="Liberian dollar">LRD</option>
-                                        <option value="LSL" label="Lesotho loti">LSL</option>
-                                        <option value="LYD" label="Libyan dinar">LYD</option>
-                                        <option value="MAD" label="Moroccan dirham">MAD</option>
-                                        <option value="MDL" label="Moldovan leu">MDL</option>
-                                        <option value="MGA" label="Malagasy ariary">MGA</option>
-                                        <option value="MKD" label="Macedonian denar">MKD</option>
-                                        <option value="MMK" label="Burmese kyat">MMK</option>
-                                        <option value="MNT" label="Mongolian tögrög">MNT</option>
-                                        <option value="MOP" label="Macanese pataca">MOP</option>
-                                        <option value="MRU" label="Mauritanian ouguiya">MRU</option>
-                                        <option value="MUR" label="Mauritian rupee">MUR</option>
-                                        <option value="MVR" label="Maldivian rufiyaa">MVR</option>
-                                        <option value="MWK" label="Malawian kwacha">MWK</option>
-                                        <option value="MXN" label="Mexican peso">MXN</option>
-                                        <option value="MYR" label="Malaysian ringgit">MYR</option>
-                                        <option value="MZN" label="Mozambican metical">MZN</option>
-                                        <option value="NAD" label="Namibian dollar">NAD</option>
-                                        <option value="NGN" label="Nigerian naira">NGN</option>
-                                        <option value="NIO" label="Nicaraguan córdoba">NIO</option>
-                                        <option value="NOK" label="Norwegian krone">NOK</option>
-                                        <option value="NPR" label="Nepalese rupee">NPR</option>
-                                        <option value="NZD" label="New Zealand dollar">NZD</option>
-                                        <option value="OMR" label="Omani rial">OMR</option>
-                                        <option value="PAB" label="Panamanian balboa">PAB</option>
-                                        <option value="PEN" label="Peruvian sol">PEN</option>
-                                        <option value="PGK" label="Papua New Guinean kina">PGK</option>
-                                        <option value="PHP" label="Philippine peso">PHP</option>
-                                        <option value="PKR" label="Pakistani rupee">PKR</option>
-                                        <option value="PLN" label="Polish złoty">PLN</option>
-                                        <option value="PRB" label="Transnistrian ruble">PRB</option>
-                                        <option value="PYG" label="Paraguayan guaraní">PYG</option>
-                                        <option value="QAR" label="Qatari riyal">QAR</option>
-                                        <option value="RON" label="Romanian leu">RON</option>
-                                        <option value="RON" label="Romanian leu">RON</option>
-                                        <option value="RSD" label="Serbian dinar">RSD</option>
-                                        <option value="RUB" label="Russian ruble">RUB</option>
-                                        <option value="RWF" label="Rwandan franc">RWF</option>
-                                        <option value="SAR" label="Saudi riyal">SAR</option>
-                                        <option value="SEK" label="Swedish krona">SEK</option>
-                                        <option value="SGD" label="Singapore dollar">SGD</option>
-                                        <option value="SHP" label="Saint Helena pound">SHP</option>
-                                        <option value="SLL" label="Sierra Leonean leone">SLL</option>
-                                        <option value="SLS" label="Somaliland shilling">SLS</option>
-                                        <option value="SOS" label="Somali shilling">SOS</option>
-                                        <option value="SRD" label="Surinamese dollar">SRD</option>
-                                        <option value="SSP" label="South Sudanese pound">SSP</option>
-                                        <option value="STN" label="São Tomé and Príncipe dobra">STN</option>
-                                        <option value="SYP" label="Syrian pound">SYP</option>
-                                        <option value="SZL" label="Swazi lilangeni">SZL</option>
-                                        <option value="THB" label="Thai baht">THB</option>
-                                        <option value="TJS" label="Tajikistani somoni">TJS</option>
-                                        <option value="TMT" label="Turkmenistan manat">TMT</option>
-                                        <option value="TND" label="Tunisian dinar">TND</option>
-                                        <option value="TOP" label="Tongan paʻanga">TOP</option>
-                                        <option value="TRY" label="Turkish lira">TRY</option>
-                                        <option value="TTD" label="Trinidad and Tobago dollar">TTD</option>
-                                        <option value="TVD" label="Tuvaluan dollar">TVD</option>
-                                        <option value="TWD" label="New Taiwan dollar">TWD</option>
-                                        <option value="TZS" label="Tanzanian shilling">TZS</option>
-                                        <option value="UAH" label="Ukrainian hryvnia">UAH</option>
-                                        <option value="UGX" label="Ugandan shilling">UGX</option>
-                                        <option value="USD" label="United States dollar">USD</option>
-                                        <option value="UYU" label="Uruguayan peso">UYU</option>
-                                        <option value="UZS" label="Uzbekistani soʻm">UZS</option>
-                                        <option value="VES" label="Venezuelan bolívar soberano">VES</option>
-                                        <option value="VND" label="Vietnamese đồng">VND</option>
-                                        <option value="VUV" label="Vanuatu vatu">VUV</option>
-                                        <option value="WST" label="Samoan tālā">WST</option>
-                                        <option value="XAF" label="Central African CFA franc">XAF</option>
-                                        <option value="XCD" label="Eastern Caribbean dollar">XCD</option>
-                                        <option value="XOF" label="West African CFA franc">XOF</option>
-                                        <option value="XPF" label="CFP franc">XPF</option>
-                                        <option value="ZAR" label="South African rand">ZAR</option>
-                                        <option value="ZMW" label="Zambian kwacha">ZMW</option>
-                                        <option value="ZWB" label="Zimbabwean bonds">ZWB</option>
+                                    <label class="" for="form-password">Engine</label>
+                                    <InputSelect @bind-Value="Model.IdentityProvider" class="form-email form-control">
+                                        <option value="Default">Default Identity</option>
+                                        <option value="IDS4">Identity Server 4</option>
+                                        <option value="AAD">Azure Active Directory</option>
+                                        <option value="AadB2C">Azure Active Directory B2C</option>
                                     </InputSelect>
                                 </div>
+                                @if (Model.IdentityProvider == "AAD" || Model.IdentityProvider == "AadB2C")
+                                {
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD Instance</label>
+                                        <InputText @bind-Value="Model.AadInstance" type="text" name="form-email" placeholder="https://login.microsoftonline.com/tfp/" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD Domain</label>
+                                        <InputText @bind-Value="Model.AadDomain" type="text" name="form-email" placeholder="contoso.onmicrosoft.com" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD Client ID</label>
+                                        <InputText @bind-Value="Model.AadClientId" type="text" name="form-email" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD Callback Path</label>
+                                        <InputText @bind-Value="Model.AadCallbackPath" type="text" name="form-email" placeholder="/signin-oidc" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD Graph Tenant</label>
+                                        <InputText @bind-Value="Model.AadGraphTenant" type="text" name="form-email" placeholder="contoso.onmicrosoft.com" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD Graph Client ID</label>
+                                        <InputText @bind-Value="Model.AadGraphClientId" type="text" name="form-email" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD Graph Client Secret</label>
+                                        <InputText @bind-Value="Model.AadGraphClientSecret" type="text" name="form-email" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD Admins Security Group</label>
+                                        <InputText @bind-Value="Model.AadAdminsSecurityGroup" type="text" name="form-email" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                }
+
+                                @if (Model.IdentityProvider == "AadB2C")
+                                {
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD B2C Sign-In/Sign-Up Policy </label>
+                                        <InputText @bind-Value="Model.AadB2cSignUpSignInPolicyId" type="text" name="form-email" placeholder="B2C_1_SignInSignUp" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD B2C Edit Profile Policy </label>
+                                        <InputText @bind-Value="Model.AadB2cEditProfilePolicyId" type="text" name="form-email" placeholder="B2C_1_Edit" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="" for="form-email">AAD B2C Reset Password Policy </label>
+                                        <InputText @bind-Value="Model.AadB2cResetPasswordPolicyId" type="text" name="form-email" placeholder="B2C_1_ChangePassword" class="form-email form-control" id="form-email" />
+                                    </div>
+
+                                }
 
                                 <button type="button" class="btn btn-previous">Previous</button>
                                 <button type="submit" class="btn">Validate</button>
                                 <button type="button" class="btn btn-next">Next</button>
                             </div>
                         </fieldset>
+
                         <!-- Review -->
                         <fieldset>
                             <div class="form-top">
@@ -766,12 +710,14 @@
                                 </div>
                             </div>
                             <div class="form-bottom">
+
                                 <div class="form-group">
                                     <DataAnnotationsValidator />
                                     <ValidationSummary />
                                 </div>
+
                                 <div class="form-group">
-                                    <label class="" for="form-email">DB Engine</label>
+                                    <label class="" for="form-email">DataContext Engine</label>
                                     <p><b>@Model.DBEngine</b></p>
                                 </div>
 
@@ -789,15 +735,254 @@
 </div>
 
 @code {
-    private ISuiteOptions SuiteOptions { get; set; } = new SuiteOptions();
-
     private InstallDto Model { get; set; } = new InstallDto();
+
+
+    private SqlConnection MsSqlConnection { get; set; }
+    private MySqlConnection MySqlConnection { get; set; }
+    private DbContextOptionsBuilder<ABM.Data.ABMContext> contextOptions { get; set; }
+
+    private bool Seeding { get; set; }
+    private int ErrorCount { get; set; }
+    private ABMContext DataContext { get; set; }
+    private IHostEnvironment Environment { get; set; }
+    private HolderHelpers HolderHelpers { get; set; }
 
     protected async Task OnValidSubmit()
     {
-        // TODO: Configure initial configuration file.
+
+        SuiteOptions.Status.Installed = true;
+        SuiteOptions.ABM.Enable = true;
+
+        SuiteOptions.ABM.Provider = Model.DBEngine;
+
+        if (SuiteOptions.ABM.Providers == null)
+        {
+            SuiteOptions.ABM.Providers = new List<AllianceBusinessModelProvider>();
+        }
+
+        var Providers = new List<AllianceBusinessModelProvider>();
+        var Provider = new AllianceBusinessModelProvider();
+
+
+        switch (Model.DBEngine)
+        {
+            case "MSSQL":
+                Provider.Purpose = "ABM.Data";
+                Provider.Name = "Production MSSQL";
+                Provider.Environment = "Production";
+                Provider.ProviderEngine = ACL.Configuration.Enums.AllianceBusinessModelProviderEngine.MSSQL;
+                Provider.ProviderPurpose = ACL.Configuration.Enums.AllianceBusinessModelProviderPurpose.ABM_Data;
+                Provider.ConnectionString = $"Server=tcp:{Model.DBHost};Database={Model.DBName};User ID={Model.DBUserName};Password={Model.DBUserSecret};Trusted_Connection=False;MultipleActiveResultSets=true";
+
+                try
+                {
+
+                    MsSqlConnection = new SqlConnection(Provider.ConnectionString);
+                    MsSqlConnection.Open();
+                    await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Connection to Database Succeeded.");
+                    MsSqlConnection.Close();
+
+                    contextOptions = new Microsoft.EntityFrameworkCore.DbContextOptionsBuilder<ABM.Data.ABMContext>()
+                        .UseSqlServer(Provider.ConnectionString, optionsBuilder =>
+                        {
+                            optionsBuilder.MigrationsAssembly("FenixAlliance.ABM.Data.MSSQL");
+                            optionsBuilder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                        });
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+
+
+                break;
+            case "MySQL":
+                Provider.Purpose = "ABM.Data";
+                Provider.Name = "Production MySQL";
+                Provider.Environment = "Production";
+                Provider.ProviderEngine = ACL.Configuration.Enums.AllianceBusinessModelProviderEngine.MySQL;
+                Provider.ProviderPurpose = ACL.Configuration.Enums.AllianceBusinessModelProviderPurpose.ABM_Data;
+                Provider.ConnectionString = $"Server={Model.DBHost}; Port={Model.DBPort}; Database={Model.DBName}; Uid={Model.DBUserName}; Pwd={Model.DBUserSecret}; SslMode=Preferred;Convert Zero Datetime=True";
+
+                try
+                {
+
+                    MySqlConnection = new MySqlConnection(Provider.ConnectionString);
+
+                    await MySqlConnection.OpenAsync();
+                    await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Connection to Database Succeeded.");
+                    await MySqlConnection.CloseAsync();
+
+                    contextOptions = new Microsoft.EntityFrameworkCore.DbContextOptionsBuilder<ABM.Data.ABMContext>()
+                        .UseMySql(Provider.ConnectionString, ServerVersion.AutoDetect(Provider.ConnectionString),
+                        optionsBuilder =>
+                        {
+                            optionsBuilder.MigrationsAssembly("FenixAlliance.ABM.Data.MySQL");
+                            optionsBuilder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                        });
+
+                }
+                catch (Exception ex)
+                {
+                    await JS.InvokeVoidAsync("interopFunction.CloseHoldOn");
+                    await JS.InvokeVoidAsync("interopFunction.toastNotification", "error", "Error connecting to Database.");
+                    return;
+                }
+
+                break;
+        }
+
+        Providers.Add(Provider);
+
+        SuiteOptions.ABM.Providers = Providers;
+
+        using var DataContext = new ABM.Data.ABMContext(contextOptions.Options);
+        var seedingTools = new FenixAlliance.ABM.Data.Seeding.Helpers.SeedingHelpers(DataContext, SuiteOptions, new HolderHelpers(DataContext));
+
+        await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Creating Database.");
+        await DataContext.Database.EnsureCreatedAsync();
+        await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Creating Database Succeeded.");
+
+        await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Migrating Database.");
+        await DataContext.Database.MigrateAsync();
+        await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Migrating Database Succeeded.");
+
+        await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Seeding Database.");
+        if (!Seeding)
+        {
+            if (!await DataContext.Country.AnyAsync())
+            {
+                Seeding = true;
+
+                // Get Countries Data
+                var restCountries = await (new RestCountriesClient()).GetCountriesAsync();
+
+                await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Seeding Menus.");
+                await seedingTools.SeedNavigation();
+                await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Seeding Menus Completed.");
+
+                await seedingTools.SeedGoogleCategories();
+
+                await seedingTools.SeedCountries(restCountries);
+
+                await seedingTools.SeedCountryStates();
+
+                await seedingTools.SeedCities();
+
+                await seedingTools.SeedCountryTopLevelDomains(restCountries);
+
+                await seedingTools.SeedCountryAltSpellings(restCountries);
+
+                await seedingTools.SeedCountryCurrencies(restCountries);
+
+                await seedingTools.SeedCountryBorders(restCountries);
+
+                await seedingTools.SeedCountryCallingCodes(restCountries);
+
+                await seedingTools.SeedRegionalBlocks(restCountries);
+
+                await seedingTools.SeedTimeZones();
+
+                await seedingTools.RelateCountryTimeZones(restCountries);
+
+                await seedingTools.SeedCountryLanguages(restCountries);
+
+                await seedingTools.SeedBusinessIndustries();
+
+                await seedingTools.UpdateForexRates();
+
+                await seedingTools.FlushECommerceCarts();
+
+                Seeding = false;
+
+
+                seedingTools.SeedDefaultTenant(Model.TenantName, Model.TenantEmail);
+            }
+        }
+
+        await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Seeding Database Succeeded.");
+
+
+        SuiteOptions.APS.Enable = true;
+
+
+        switch (Model.IdentityProvider)
+        {
+            case "Default":
+                SuiteOptions.APS.AuthenticationProvider = AuthenticationProvider.DefaultIdentity;
+                break;
+
+            case "IDS4":
+                SuiteOptions.APS.AuthenticationProvider = AuthenticationProvider.IdentityServer4;
+                break;
+
+            case "AAD":
+                SuiteOptions.APS.AuthenticationProvider = AuthenticationProvider.AzureActiveDirectory;
+                break;
+
+            case "AadB2C":
+                SuiteOptions.APS.AuthenticationProvider = AuthenticationProvider.AzureActiveDirectoryB2C;
+                break;
+        }
+
+
+        SuiteOptions.ABP.Enable = true;
+        SuiteOptions.ABP.Caching.Enable = true;
+        SuiteOptions.ABP.Cognitive.Enable = true;
+        SuiteOptions.ABP.Cookies.Enable = true;
+        SuiteOptions.ABP.Cors.Enable = true;
+        SuiteOptions.ABP.DevMode.Enable = true;
+        SuiteOptions.ABP.HealthChecks.Enable = true;
+        SuiteOptions.ABP.Http.Enable = true;
+
+        SuiteOptions.ABP.Integrations.Enable = true;
+
+        SuiteOptions.ABP.Integrations.OpenExchangeRates.Enable = false;
+
+
+        SuiteOptions.ABP.Localization.Enable = true;
+
+
+        SuiteOptions.ABP.Logging.Enable = true;
+        SuiteOptions.ABP.Modular.Enable = true;
+        SuiteOptions.ABP.Privacy.Enable = true;
+        SuiteOptions.ABP.Routing.Enable = true;
+        SuiteOptions.ABP.Server.Enable = true;
+        SuiteOptions.ABP.Smtp.Enable = true;
+        SuiteOptions.ABP.StaticFiles.Enable = true;
+        SuiteOptions.ABP.WebSockets.Enable = true;
+
+        SuiteOptions.ABP.Apis.Enable = true;
+        SuiteOptions.ABP.Apis.RestApi.Enable = true;
+        SuiteOptions.ABP.Apis.GraphQlApi.Enable = true;
+        SuiteOptions.ABP.Apis.IpRateLimiting.Enable = true;
+
+        SuiteOptions.ABS.Enable = true;
+        SuiteOptions.ABS.Portal.Enable = true;
+
+        SuiteOptions.ABS.Portal.Options.Title = Model.PortalTitle;
+        SuiteOptions.ABS.Portal.Options.Description = Model.PortalDescription;
+
+        SuiteOptions.ABS.Blazor.Enable = true;
+        SuiteOptions.ABS.RazorPages.Enable = true;
+        SuiteOptions.ABS.ControllersWithViews.Enable = true;
+
+        SuiteOptions.Status.Installed = true;
+        SuiteOptions.Status.Misconfigured = false;
+        SuiteOptions.Status.Unconfigured = false;
+        SuiteOptions.Status.Operational = false;
+        SuiteOptions.Status.Seeded = false;
+
 
         await SuiteOptions.SerializeOptionsToFile();
+
+        await JS.InvokeVoidAsync("interopFunction.CloseHoldOn");
+
+        // AppLifetime.StopApplication();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -805,6 +990,5 @@
         if (firstRender)
             await JS.InvokeVoidAsync("interopFunction.InitInstallForm");
     }
-
 
 }

@@ -1,10 +1,40 @@
 window.interopFunction = {
+    toastNotification: function (notificationType, notificationMessage) {
+        // Display an info toast with no title
+        switch (notificationType) {
+            case "info":
+                toastr.info(notificationMessage);
+                break;
+            case "success":
+                toastr.success(notificationMessage);
+                break;
+            case "warning":
+                toastr.warning(notificationMessage);
+                break;
+            case "error":
+                toastr.error(notificationMessage);
+                break;
+        }
+    },
+    CloseHoldOn: function (text) {
+        HoldOn.close();
+    },
+    OpenHoldOn: function (text) {
+        HoldOn.close();
+
+        HoldOn.open({
+            message: text,
+            theme: "sk-cube-grid",
+            backgroundColor: "#f1f1f1",
+            textColor: "black"
+        })
+    },
     InitInstallForm: function () {
 
         /*
             Fullscreen background
         */
-        $.backstretch("/assets/img/backgrounds/1.jpg");
+        $.backstretch("/installer/assets/img/backgrounds/1.jpg");
 
         $('#top-navbar-1').on('shown.bs.collapse', function () {
             $.backstretch("resize");

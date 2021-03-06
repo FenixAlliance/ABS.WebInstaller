@@ -21,6 +21,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>© 2009 - 2021 Fenix Alliance Inc. All rights reserved.</Copyright>
     <PackageTags>Alliance Business Suite; Fenix Alliance, ABS, ABM; ABP; ACL; APS; ACS;</PackageTags>
+    <StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/installer</StaticWebAssetBasePath>
     <PackageIconUrl>https://fenixalliance.com.co/images/FenixAlliance/AppIcon/apple-icon-120x120.png</PackageIconUrl>
     <PackageReleaseNotes>
       # Changelog
@@ -114,5 +115,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FenixAlliance.ACL.Hub" Version="1.1.2" />
+    <PackageReference Include="MySql.Data" Version="8.0.23" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FenixAlliance.ABS.Core\FenixAlliance.ABS.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 </Project>
