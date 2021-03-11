@@ -9,7 +9,6 @@
 @using MySql.Data.MySqlClient;
 @using FenixAlliance.ABM.Data;
 @using FenixAlliance.ABM.Data.Access.Clients;
-@using FenixAlliance.ABM.Data.Access.Context;
 @using FenixAlliance.ABM.Data.Access.Helpers;
 @using FenixAlliance.ABM.Data.Interfaces.Access;
 @using FenixAlliance.ABM.Data.Interfaces.Helpers;
@@ -59,7 +58,10 @@
 @using Country = FenixAlliance.ABM.Models.Global.Globe.Countries.Country;
 @using CountryState = FenixAlliance.ABM.Models.Global.Globe.Countries.CountryState;
 @using Timezone = FenixAlliance.ABM.Models.Global.Globe.TimeZones.Timezone;
+@using Microsoft.Extensions.Configuration;
+
 @inject ISuiteOptions SuiteOptions
+@inject IConfiguration Configuration
 @inject Microsoft.Extensions.Hosting.IHostApplicationLifetime AppLifetime
 <!-- Top content -->
 <div class="top-content">
@@ -841,7 +843,7 @@
         SuiteOptions.ABM.Providers = Providers;
 
         using var DataContext = new ABM.Data.ABMContext(contextOptions.Options);
-        var seedingTools = new FenixAlliance.ABM.Data.Seeding.Helpers.SeedingHelpers(DataContext, SuiteOptions, new HolderHelpers(DataContext));
+        var seedingTools = new FenixAlliance.ABM.Data.Seeding.Helpers.SeedingHelpers(DataContext, SuiteOptions, new FenixAlliance.ABM.Data.Access.Services.HolderService(DataContext, Configuration, Environment));
 
         await JS.InvokeVoidAsync("interopFunction.OpenHoldOn", "Creating Database.");
         await DataContext.Database.EnsureCreatedAsync();
